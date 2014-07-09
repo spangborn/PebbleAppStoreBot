@@ -1,7 +1,9 @@
-##[PlayStoreLinks__Bot](http://www.reddit.com/u/PlayStoreLinks__Bot)
+##[PebbleAppStoreBot](http://www.reddit.com/u/PebbleAppStoreBot)
 
 
-A Reddit bot that links to Android Apps from the Play Store when a user asks to do it.
+A Reddit bot that links to Pebble Apps from the Pebble App Store when a user asks to do it.
+
+Heavily based on /u/PlayStoreLinks__Bot by /u/cris9696. It was forked from his code.
 
 
 ####What's included
@@ -9,19 +11,17 @@ A Reddit bot that links to Android Apps from the Play Store when a user asks to 
 * LinkMeBot.py, the main program
 * App.py, a class that the bot uses to save data
 * Config.py, a simple and easy to understand configuration file
-* Test.py, a simple test to see if the Play Store parsing works.
 * LICENSE, the license that this project is released under (MIT)
 * README, this file
 
 
 ####What you need to know before editing this bot / running it on your local machine
 
-The bot was written on a Linux-Fedora machine with Python 2.7.5
+The bot was written on a OS X machine with Python 2.7.5
 
 The bot uses the following extra libraries avaible to install via pip:
 
 * praw, to interface with reddit
-* BeautifulSoup, to parse HTML
 * requests, to get web pages
 
 You need to set a valid username and password in the config file
@@ -35,14 +35,14 @@ If you want to test the code I suggest you to post a comment in a subreddit and 
 
 ####Info / Reddit-related questions / See the bot in action
 
-http://www.reddit.com/r/cris9696
+http://www.reddit.com/u/PebbleAppStoreBot
 
 Feel free to make any post you want to test it.
 
 
 ####TODO
 
-A database where I save the apps already searched to avoid as many web requests to the play store as possible
+A database where I save the apps already searched to avoid as many web requests to the Pebble App store as possible
 
 
 ####Want to help or want help?
@@ -58,4 +58,3 @@ Subimited linkme request with 10 apps and bot thinks that i requested more than 
 ####LICENSE
 
 MIT License
-

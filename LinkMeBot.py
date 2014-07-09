@@ -1,7 +1,7 @@
 """
-/u/PlayStoreLinks__Bot
+/u/PebbleAppStoreBot
 
-A bot made by /u/cris9696
+A bot made by /u/spangborn, forked from /u/PlayStoreLinks__Bot by /u/cris9696
 
 General workflow:
 
@@ -21,7 +21,7 @@ import re
 #web
 import urllib
 import HTMLParser
-from bs4 import BeautifulSoup
+import json
 import requests
 
 #mine
@@ -66,21 +66,20 @@ def generateComment(linkRequests):
         for app in appsToLink:
             app = app.strip()
             if len(app)>0:
-                app = HTMLParser.HTMLParser().unescape(app)  #html encoding to normal encoding 
+                app = HTMLParser.HTMLParser().unescape(app)  #html encoding to normal encoding
                 nOfRequestedApps+=1
                 if nOfRequestedApps<=Config.maxAppsPerComment:
                     foundApp = findApp(app)
                     if foundApp:
                         nOfFoundApps+=1
-                        reply += "[**" + foundApp.fullName + "**](" + foundApp.link + ") - Price: " + ("Free" if foundApp.free else "Paid") + " - Rating: " + foundApp.rating + "/100 - "
-                        reply += "Search for \"" + foundApp.searchName + "\" on the [**Play Store**](https://play.google.com/store/search?q=" + urllib.quote_plus(foundApp.searchName.encode("utf-8")) + ")\n\n"
-                        logging.info("\"" + foundApp.searchName + "\" found. Full Name: " + foundApp.fullName + " - Link: " + foundApp.link)
+                        reply += "[**" + foundApp.fullName + "**](" + foundApp.link + ") - by: " + foundApp.developer + " - " + str(foundApp.hearts) + " Hearts"
+                        logging.info("App found. Full Name: " + foundApp.fullName + " - Link: " + foundApp.link)
                     else:
                         reply +="I am sorry, I can't find any app named \"" + app + "\".\n\n"
                         logging.info("Can't find any app named \"" + app + "\"")
     if nOfRequestedApps>Config.maxAppsPerComment:
         reply = "You requested more than " + str(Config.maxAppsPerComment) + " apps. I will only link to the first " + str(Config.maxAppsPerComment) + " apps.\n\n" + reply
-    
+
     if nOfFoundApps == 0:
         reply = None
 
@@ -95,7 +94,7 @@ def findApp(appName):
         if app:
             return app
         else:
-            return searchOnPlayStore(appName)
+            return searchOnPebbleStore(appName)
     else:
         return None
 
@@ -103,43 +102,62 @@ def searchInDatabase(appName):
     logging.debug("TODO: Searching in database for " + appName)
     return None
 
-def searchOnPlayStore(appName):
-    appNameNoUnicode = appName.encode('utf-8') #to utf-8 because quote_plus don't like unicode!
-    appNameForSeachUrl = urllib.quote_plus(appNameNoUnicode)
+def searchOnPebbleStore(appName):
+    appNameNoUnicode = appName.encode('utf-8')
+    appNameforSearchUrl = urllib.quote_plus(appNameNoUnicode)
+
+    pblAppId = 'BUJATNZD81'
+    pblApiKey = '8dbb11cdde0f4f9d7bf787e83ac955ed'
+    #pblHost = 'http://httpbin.org/post'
+    pblHost = 'http://bujatnzd81-1.algolia.io/1/indexes/pebble-appstore-production/query'
+
+    # POST Payload
+    payload = '{ \"params\": \"query=' + appName + '\" }'
+
+
+    # Headers (w/ API )
+
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding' : 'gzip, deflate',
+        'Accept-Language' : 'en-US,en;q=0.5',
+        'Content-Type'    : 'application/json; charset=UTF-8',
+        'Origin' : 'http://pas.cpfx.ca',
+        'Pragma' : 'no-cache',
+        'Referer' : 'http://pas.cpfx.ca/store_boot.html?access_token=0',
+        'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:30.0) Gecko/20100101 Firefox/30.0',
+        'X-Algolia-API-Key': pblApiKey,
+        'X-Algolia-Application-Id' : pblAppId
+    }
+
     try:
-        request = requests.get("http://play.google.com/store/search?q=\"" + appNameForSeachUrl + "\"&c=apps&hl=en")
-        page = BeautifulSoup(request.text)
-        cards = page.findAll(attrs={"class": "card"})
-        if len(cards) > 0:
-            app = getAppFromCard(cards[0])
-            if app:
-                app.searchName = appName
-                addToDB(app)
-            
+        response = requests.post(url=pblHost, data=payload, headers=headers)
+        apps = response.json()["hits"]
+
+
+        if len(apps) > 0:
+            app = getAppFromJson(apps[0])
             return app
         else:
-            request = requests.get("http://play.google.com/store/search?q=" + appNameForSeachUrl + "&c=apps&hl=en")
-            page = BeautifulSoup(request.text)
-            cards = page.findAll(attrs={"class": "card"})
-            if len(cards) > 0:
-                app = getAppFromCard(cards[0])
-                if app:
-                    app.searchName = appName
-                    addToDB(app)
-                return app
-            else:
-                return None
+            return None
+
     except Exception as e:
-        logging.error("Exception \"" + str(e) + "\" occured while searching on the Play Store! Shutting down!")
+        logging.error("Exception \"" + str(e) + "\" occured while searching on the Pebble Store! Shutting down!")
         stopBot(True)
 
-def getAppFromCard(card):
+def getAppFromJson(data):
+
     app = App.App()
-    app.fullName =  card.find(attrs={"class": "title"}).get("title")
-    app.link =  "https://play.google.com" + card.find(attrs={"class": "title"}).get("href")
-    app.free = True if card.find(attrs={"class": "price buy"}).get_text().strip().lower() == "free" else False
-    app.rating = card.find(attrs={"class": "current-rating"})["style"].strip().replace("width: ","")[:2]
+
+    app.fullName = data["title"]
+    app.developer = data["author"]
+    app.link = 'http://pblweb.com/appstore/' + data["id"]
+    app.version = data["version"]
+    app.hearts = data["hearts"]
+    app.appType = data["type"]
+
     return app
+
 
 def reply(comment,myReply):
     logging.debug("Replying to \"" + comment.id + "\"")
@@ -173,7 +191,7 @@ if __name__ == "__main__":
 
     logging.debug("Logging in")
     try:
-        r = praw.Reddit("/u/PlayStoreLinks__Bot by /u/cris9696")
+        r = praw.Reddit("/u/PebbleAppStoreBot by /u/spangborn")
         r.login(Config.username, Config.password)
         logging.debug("Successfully logged in")
 
@@ -191,7 +209,7 @@ if __name__ == "__main__":
     subreddits = r.get_subreddit("+".join(Config.subreddits))
 
 
-    linkRequestRegex = re.compile("\\blink[\s]*me[\s]*:[\s]*(.*?)(?:\.|$)", re.M | re.I)
+    linkRequestRegex = re.compile("\\bpebble[\s]*me[\s]*:[\s]*(.*?)(?:\.|$)", re.M | re.I)
 
     try:
         logging.debug("Getting the comments")
@@ -201,7 +219,7 @@ if __name__ == "__main__":
         logging.error("Exception \"" + str(e) + "\" occured while getting comments! Shutting down!")
         stopBot(True)
 
-    
+
     for comment in comments:
         myReply = ""
         comment.body = removeRedditFormatting(comment.body)
@@ -212,16 +230,15 @@ if __name__ == "__main__":
             if not isDone(comment):
                 logging.info("Generating reply to \"" + comment.id + "\"")
                 myReply = generateComment(linkRequests)
-                
+
                 if myReply is not None:
                     reply(comment,myReply)
                 else:
                     logging.info("No apps found for comment \"" + comment.id + "\"\n\n")
-                
+
     logging.debug("Shutting down")
 
 
 
 
     stopBot(True)
-

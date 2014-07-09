@@ -1,8 +1,8 @@
 import logging
 
 #Login Info
-username = "username"
-password = "password"
+username = ""
+password = ""
 
 #LOGGING
 loggingLevel = logging.INFO
@@ -13,9 +13,9 @@ logFile = "bot.log"
 botRunningFile = "botRunning"
 
 #SUBREDDITS
-subreddits = ["cris9696", "AndroidGaming","AndroidQuestions","Android","AndroidUsers","twitaaa","AndroidApps","AndroidThemes","harley","supermoto","bikebuilders","careerguidance","mentalfloss","nexus7","redditsync","nexus5","tasker","LGG2","androidtechsupport","nexus4","pebble"]
+subreddits = ["spangborn_test", "pebble", "PebbleAppStoreBot"]
 #subreddits = ["cris9696"]
 
 #REPLY
-maxAppsPerComment = 10
-closingFormula = "\n\n------\n\n[^Source ^Code](https://github.com/cris9696/PlayStoreLinks_Bot) ^| [^Feedback/Bug ^report](http://www.reddit.com/r/cris9696) ^| ^Bot ^by ^/u/cris9696 "
+maxAppsPerComment = 5
+closingFormula = "\n\n------\n\n[^Source ^Code](https://github.com/spangborn/PebbleAppStoreBot) ^| ^Based ^on ^/u/PlayStoreLinks__Bot ^by ^/u/cris9696 ^| ^By ^/u/spangborn"

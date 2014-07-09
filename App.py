@@ -1,9 +1,10 @@
 class App():
     fullName = None
+    developer = None
     link = None
-    searchName = None
-    rating = None
-    free = False
+    version = None
+    hearts = None
+    appType = None
 
     def __init__(self):
         pass
