@@ -52,7 +52,7 @@ A database where I save the apps already searched to avoid as many web requests 
 * If you need help please fell free to ask me.
 
 * If you find any bug or exploit please tell me: I will try to fix them or if you want you can fix them and I will include your changes in the project
-Subimited linkme request with 10 apps and bot thinks that i requested more than 10 apps
+
 * If you find a way to improve the bot please share it with everybody.
 
 ####LICENSE
