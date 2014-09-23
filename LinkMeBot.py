@@ -151,7 +151,7 @@ def getAppFromJson(data):
 
     app.fullName = data["title"]
     app.developer = data["author"]
-    app.link = 'http://pblweb.com/appstore/' + data["id"]
+    app.link = 'https://apps.getpebble.com/applications/' + data["id"]
     app.version = data["version"]
     app.hearts = data["hearts"]
     app.appType = data["type"]
