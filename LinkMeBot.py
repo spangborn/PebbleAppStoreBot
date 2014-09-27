@@ -72,7 +72,7 @@ def generateComment(linkRequests):
                     foundApp = findApp(app)
                     if foundApp:
                         nOfFoundApps+=1
-                        reply += "[**" + foundApp.fullName + "**](" + foundApp.link + ") - by: " + foundApp.developer + " - " + str(foundApp.hearts) + " Hearts"
+                        reply += "[**" + foundApp.fullName + "**](" + foundApp.link + ") - by: " + foundApp.developer + " - " + str(foundApp.hearts) + " Hearts\n\n"
                         logging.info("App found. Full Name: " + foundApp.fullName + " - Link: " + foundApp.link)
                     else:
                         reply +="I am sorry, I can't find any app named \"" + app + "\".\n\n"
