@@ -55,8 +55,8 @@ def stopBot(removeFile = False):
 def removeRedditFormatting(text):
     return text.replace("*", "").replace("~", "").replace("^", "").replace(">","")
 
- def isDone(comment):
-     #TODO check if in the database
+def isDone(comment):
+    #TODO check if in the database
     if comment.id in alreadyDone:
         logging.debug("Already replied to \"" + comment.id + "\"")
         return True
