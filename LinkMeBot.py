@@ -224,7 +224,7 @@ if __name__ == "__main__":
         comments = subreddits.get_comments()
         logging.debug("Comments successfully loaded")
     except Exception as e:
-        if str(e) != "TOO_OLD":
+        if "TOO_OLD" not in str(e):
             logging.error("Exception \"" + str(e) + "\" occured while getting comments! Shutting down!")
             stopBot(True)
 
