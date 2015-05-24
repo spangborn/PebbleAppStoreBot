@@ -17,6 +17,7 @@ import logging
 import os
 import sys
 import re
+import cPickle as pickle
 
 #web
 import urllib
@@ -27,6 +28,12 @@ import requests
 #mine
 import Config
 import App
+from pprint import pprint
+
+try:
+    alreadyDone = pickle.load( open( "done.p", "rb" ) )
+except IOError:
+    alreadyDone = []
 
 #setting up the logger
 
@@ -41,19 +48,20 @@ logging.getLogger('').addHandler(console)
 def stopBot(removeFile = False):
     """if removeFile:
         os.remove(Config.botRunningFile)"""
+    pickle.dump( alreadyDone, open( "done.p", "wb" ) )
     sys.exit(0)
 
 
 def removeRedditFormatting(text):
     return text.replace("*", "").replace("~", "").replace("^", "").replace(">","")
 
-def isDone(comment):
-    #TODO check if in the database
-    for reply in comment.replies:
-        if reply.author.name == Config.username:
-            logging.debug("Already replied to \"" + comment.id + "\"")
-            return True
+ def isDone(comment):
+     #TODO check if in the database
+    if comment.id in alreadyDone:
+        logging.debug("Already replied to \"" + comment.id + "\"")
+        return True
 
+    alreadyDone.append(comment.id)
     return False
 
 
