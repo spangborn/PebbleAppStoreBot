@@ -13,9 +13,9 @@ logFile = "bot.log"
 botRunningFile = "botRunning"
 
 #SUBREDDITS
-subreddits = ["spangborn_test", "pebble", "PebbleAppStoreBot"]
+subreddits = ["spangborn_test", "PebbleAppStoreBot", "pebble"]
 #subreddits = ["cris9696"]
 
 #REPLY
-maxAppsPerComment = 5
-closingFormula = "\n\n------\n\n[^Source ^Code](https://github.com/spangborn/PebbleAppStoreBot) ^| ^Based ^on ^/u/PlayStoreLinks__Bot ^by ^/u/cris9696 ^| ^By ^/u/spangborn"
+maxAppsPerComment = 8
+closingFormula = "\n\n------\n\n[^Source ^Code](https://github.com/spangborn/PebbleAppStoreBot) ^| ^By ^/u/spangborn"

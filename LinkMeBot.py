@@ -13,6 +13,7 @@ General workflow:
 
 #general
 import praw
+import OAuth2Util
 import logging
 import os
 import sys
@@ -200,7 +201,9 @@ if __name__ == "__main__":
     logging.debug("Logging in")
     try:
         r = praw.Reddit("/u/PebbleAppStoreBot by /u/spangborn")
-        r.login(Config.username, Config.password)
+        #r.login(Config.username, Config.password)
+	o = OAuth2Util.OAuth2Util(r, server_mode=True)
+	o.refresh(force=True)
         logging.debug("Successfully logged in")
 
     except praw.errors.RateLimitExceeded as error:
